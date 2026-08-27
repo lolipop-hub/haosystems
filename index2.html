@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAO | How the System Works</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+    --cyan:#00ffc8;
+    --blue:#168cff;
+    --bg:#04070b;
+    --panel:rgba(10,18,25,.82);
+    --line:rgba(0,255,200,.14);
+    --text:#f3fbff;
+    --muted:#7e8b96;
+}
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+}
+.background{position:fixed;inset:0;z-index:-10;overflow:hidden;background:
+radial-gradient(circle at 15% 15%,rgba(0,255,200,.11),transparent 28%),
+radial-gradient(circle at 85% 80%,rgba(0,130,255,.10),transparent 30%),var(--bg)}
+.grid{position:absolute;inset:-50%;background-image:
+linear-gradient(rgba(0,255,200,.035) 1px,transparent 1px),
+linear-gradient(90deg,rgba(0,255,200,.035) 1px,transparent 1px);
+background-size:50px 50px;transform:perspective(600px) rotateX(58deg);
+animation:grid 14s linear infinite}
+@keyframes grid{to{transform:perspective(600px) rotateX(58deg) translateY(50px)}}
+.glow{position:absolute;width:380px;height:380px;border-radius:50%;filter:blur(100px);opacity:.14;animation:float 8s ease-in-out infinite}
+.glow.one{background:var(--cyan);top:-170px;left:-100px}
+.glow.two{background:var(--blue);right:-150px;bottom:-150px;animation-delay:-4s}
+@keyframes float{50%{transform:translate(45px,-35px) scale(1.12)}}
+.particles{position:fixed;inset:0;pointer-events:none;z-index:-5}
+.particle{position:absolute;width:2px;height:2px;background:var(--cyan);border-radius:50%;box-shadow:0 0 10px var(--cyan);animation:rise linear infinite}
+@keyframes rise{from{transform:translateY(110vh);opacity:0}15%{opacity:.8}85%{opacity:.8}to{transform:translateY(-10vh);opacity:0}}
+
+nav{
+position:fixed;top:0;left:0;width:100%;height:72px;padding:0 5%;
+display:flex;align-items:center;justify-content:space-between;
+background:rgba(4,7,11,.8);backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,.07);z-index:100
+}
+.logo{display:flex;align-items:center;gap:12px;font-weight:bold;letter-spacing:2px}
+.logo-icon{width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+border:1px solid var(--cyan);border-radius:10px;color:var(--cyan);
+box-shadow:0 0 22px rgba(0,255,200,.25);animation:pulse 2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 35px rgba(0,255,200,.5)}}
+.logo span{color:var(--cyan)}
+.back{color:#9aa7b1;text-decoration:none;font-size:11px;letter-spacing:1.5px;transition:.3s}
+.back:hover{color:var(--cyan)}
+
+main{max-width:1450px;margin:auto;padding:105px 5% 50px}
+.hero{animation:enter .8s ease both;margin-bottom:30px}
+@keyframes enter{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:none}}
+.eyebrow{color:var(--cyan);font-size:11px;letter-spacing:3px;margin-bottom:10px}
+h1{font-size:clamp(36px,5vw,64px);letter-spacing:-3px}
+.hero p{max-width:800px;color:var(--muted);line-height:1.7;margin-top:12px;font-size:14px}
+
+.card{
+background:var(--panel);border:1px solid var(--line);border-radius:18px;
+backdrop-filter:blur(16px);box-shadow:0 18px 60px rgba(0,0,0,.3);
+position:relative;overflow:hidden
+}
+.card:before{content:"";position:absolute;top:0;left:0;width:100%;height:1px;
+background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.5}
+
+/* WORKFLOW */
+.workflow{
+display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px
+}
+.step{
+padding:20px;min-height:175px;animation:cardIn .7s ease both
+}
+.step:nth-child(2){animation-delay:.1s}.step:nth-child(3){animation-delay:.2s}
+.step:nth-child(4){animation-delay:.3s}.step:nth-child(5){animation-delay:.4s}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:none}}
+.step-no{font-size:10px;color:var(--cyan);letter-spacing:2px;margin-bottom:15px}
+.step-icon{
+width:42px;height:42px;border:1px solid rgba(0,255,200,.3);border-radius:11px;
+display:flex;align-items:center;justify-content:center;color:var(--cyan);
+font-weight:bold;margin-bottom:14px;box-shadow:inset 0 0 15px rgba(0,255,200,.04)
+}
+.step h2{font-size:15px;margin-bottom:8px}
+.step p{font-size:11px;line-height:1.6;color:#84929d}
+
+/* MAIN CONTENT */
+.content{
+display:grid;grid-template-columns:1fr 1fr;gap:15px
+}
+.panel{padding:25px}
+.panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.panel-title h2{font-size:16px}
+.panel-title span{font-size:9px;color:#63717c;letter-spacing:2px}
+
+/* CONTROLLER NAVIGATION */
+.controls{display:grid;gap:10px}
+.control{
+padding:16px;border:1px solid rgba(255,255,255,.06);border-radius:12px;
+background:rgba(255,255,255,.018);cursor:pointer;transition:.3s
+}
+.control:hover,.control.active{
+border-color:rgba(0,255,200,.3);background:rgba(0,255,200,.035);
+transform:translateX(4px)
+}
+.control-top{display:flex;align-items:center;gap:12px}
+.icon{
+width:35px;height:35px;display:flex;align-items:center;justify-content:center;
+border:1px solid rgba(0,255,200,.2);border-radius:9px;color:var(--cyan);font-size:11px;font-weight:bold
+}
+.control h3{font-size:12px}
+.arrow{margin-left:auto;color:#53616c;transition:.3s}
+.control.active .arrow{color:var(--cyan);transform:rotate(90deg)}
+.description{
+max-height:0;overflow:hidden;color:#7f8c96;font-size:11px;line-height:1.65;
+transition:max-height .4s ease,margin-top .4s ease
+}
+.control.active .description{max-height:120px;margin-top:12px}
+
+/* SYSTEM FLOW */
+.flow-box{
+min-height:355px;display:flex;flex-direction:column;justify-content:center;
+align-items:center;gap:0
+}
+.flow-item{
+width:min(390px,90%);padding:14px 17px;border:1px solid rgba(0,255,200,.12);
+border-radius:11px;background:rgba(0,255,200,.025);position:relative
+}
+.flow-item strong{font-size:11px;color:var(--cyan)}
+.flow-item p{font-size:10px;color:#74818b;margin-top:5px;line-height:1.5}
+.flow-line{width:1px;height:25px;background:linear-gradient(var(--cyan),transparent);box-shadow:0 0 8px rgba(0,255,200,.4)}
+
+/* NOTICE */
+.notice{
+margin-top:15px;padding:17px;border:1px solid rgba(255,174,0,.18);
+border-radius:13px;background:rgba(255,174,0,.035);display:flex;gap:13px;align-items:center
+}
+.notice-icon{width:35px;height:35px;border:1px solid rgba(255,174,0,.4);color:#ffb000;
+border-radius:9px;display:flex;align-items:center;justify-content:center;animation:blink2 1.5s infinite}
+@keyframes blink2{50%{box-shadow:0 0 18px rgba(255,174,0,.25)}}
+.notice strong{font-size:11px}.notice p{font-size:10px;color:#747f88;margin-top:4px}
+
+.footer{text-align:center;padding:30px;color:#46535e;font-size:10px;letter-spacing:1px}
+
+@media(max-width:1050px){.workflow{grid-template-columns:repeat(2,1fr)}.content{grid-template-columns:1fr}}
+@media(max-width:600px){nav{padding:0 5%}.workflow{grid-template-columns:1fr}main{padding:100px 5% 30px}h1{letter-spacing:-2px}}
+</style>
+</head>
+
+<body>
+
+<div class="background">
+    <div class="grid"></div>
+    <div class="glow one"></div>
+    <div class="glow two"></div>
+</div>
+<div class="particles" id="particles"></div>
+
+<nav>
+    <div class="logo">
+        <div class="logo-icon">H</div>
+        <div>H<span>.</span>A.O</div>
+    </div>
+    <a href="index1.html" class="back">← BACK TO HOME</a>
+</nav>
+
+<main>
+
+    <section class="hero">
+        <div class="eyebrow">HAO // SYSTEM GUIDE</div>
+        <h1>HOW THE <span style="color:var(--cyan)">SYSTEM WORKS</span></h1>
+        <p>
+            This interface explains the operation of the Hydro Automated Operator (HAO),
+            from waste detection and claw collection to container monitoring and notification.
+            Select a controller below to view its function.
+        </p>
+    </section>
+
+    <!-- SYSTEM WORKFLOW -->
+    <section class="workflow">
+
+        <div class="card step">
+            <div class="step-no">STEP 01</div>
+            <div class="step-icon">S</div>
+            <h2>Detection</h2>
+            <p>The ultrasonic sensor detects the presence and distance of waste in the operating area.</p>
+        </div>
+
+        <div class="card step">
+            <div class="step-no">STEP 02</div>
+            <div class="step-icon">C</div>
+            <h2>Collection</h2>
+            <p>The claw mechanism moves downward toward the detected waste and performs the scoop operation.</p>
+        </div>
+
+        <div class="card step">
+            <div class="step-no">STEP 03</div>
+            <div class="step-icon">F</div>
+            <h2>Filtration</h2>
+            <p>The collected waste proceeds through the HAO waste and oil/sebo processing section.</p>
+        </div>
+
+        <div class="card step">
+            <div class="step-no">STEP 04</div>
+            <div class="step-icon">M</div>
+            <h2>Monitoring</h2>
+            <p>The container level is monitored to determine whether the collected waste is approaching capacity.</p>
+        </div>
+
+        <div class="card step">
+            <div class="step-no">STEP 05</div>
+            <div class="step-icon">N</div>
+            <h2>Notification</h2>
+            <p>When intervention is needed, the notification function informs the owner or responsible person.</p>
+        </div>
+
+    </section>
+
+    <section class="content">
+
+        <!-- CONTROLLER NAVIGATION -->
+        <div class="card panel">
+
+            <div class="panel-title">
+                <h2>CONTROLLER NAVIGATION</h2>
+                <span>SELECT TO VIEW</span>
+            </div>
+
+            <div class="controls">
+
+                <div class="control active">
+                    <div class="control-top">
+                        <div class="icon">ESP</div>
+                        <h3>ESP32 — MAIN CONTROLLER</h3>
+                        <div class="arrow">›</div>
+                    </div>
+                    <div class="description">
+                        The ESP32 acts as the main controller of the HAO system. It receives
+                        sensor information, processes the programmed conditions, and sends
+                        commands to the connected components to coordinate the operation.
+                    </div>
+                </div>
+
+                <div class="control">
+                    <div class="control-top">
+                        <div class="icon">US</div>
+                        <h3>ULTRASONIC SENSOR</h3>
+                        <div class="arrow">›</div>
+                    </div>
+                    <div class="description">
+                        The ultrasonic sensor measures the distance between the sensor and
+                        an object. In HAO, this information is used for waste detection and
+                        container fullness monitoring.
+                    </div>
+                </div>
+
+                <div class="control">
+                    <div class="control-top">
+                        <div class="icon">MD</div>
+                        <h3>MOTOR DRIVER</h3>
+                        <div class="arrow">›</div>
+                    </div>
+                    <div class="description">
+                        The motor driver receives control signals from the ESP32 and provides
+                        the required motor control for the claw mechanism.
+                    </div>
+                </div>
+
+                <div class="control">
+                    <div class="control-top">
+                        <div class="icon">CL</div>
+                        <h3>CLAW MECHANISM</h3>
+                        <div class="arrow">›</div>
+                    </div>
+                    <div class="description">
+                        The claw performs the main collection movement. It moves downward,
+                        performs one scoop when the programmed condition is reached, waits
+                        for the collection interval, and then moves upward.
+                    </div>
+                </div>
+
+                <div class="control">
+                    <div class="control-top">
+                        <div class="icon">LS</div>
+                        <h3>LIMIT SWITCH</h3>
+                        <div class="arrow">›</div>
+                    </div>
+                    <div class="description">
+                        The limit switch identifies the upper position of the claw. When the
+                        claw reaches the upper limit switch, the movement stops and the
+                        system can proceed with its programmed return sequence.
+                    </div>
+                </div>
+
+                <div class="control">
+                    <div class="control-top">
+                        <div class="icon">CN</div>
+                        <h3>CONTAINER MONITORING</h3>
+                        <div class="arrow">›</div>
+                    </div>
+                    <div class="description">
+                        The container level is monitored using the sensor. The system checks
+                        the measured distance against the programmed level to determine
+                        whether the container is empty, partially filled, near capacity, or full.
+                    </div>
+                </div>
+
+                <div class="control">
+                    <div class="control-top">
+                        <div class="icon">NT</div>
+                        <h3>NOTIFICATION SYSTEM</h3>
+                        <div class="arrow">›</div>
+                    </div>
+                    <div class="description">
+                        The notification function provides an alert when the container reaches
+                        its programmed capacity or when human intervention is needed.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- OPERATION FLOW -->
+        <div class="card panel">
+
+            <div class="panel-title">
+                <h2>HAO OPERATION FLOW</h2>
+                <span>PROCESS SEQUENCE</span>
+            </div>
+
+            <div class="flow-box">
+
+                <div class="flow-item">
+                    <strong>01 — DETECT</strong>
+                    <p>Ultrasonic sensor checks for waste or container level.</p>
+                </div>
+
+                <div class="flow-line"></div>
+
+                <div class="flow-item">
+                    <strong>02 — MOVE DOWN</strong>
+                    <p>The claw moves downward toward the collection area.</p>
+                </div>
+
+                <div class="flow-line"></div>
+
+                <div class="flow-item">
+                    <strong>03 — SCOOP</strong>
+                    <p>The claw performs the collection operation once.</p>
+                </div>
+
+                <div class="flow-line"></div>
+
+                <div class="flow-item">
+                    <strong>04 — MOVE UP</strong>
+                    <p>After the programmed delay, the claw moves upward.</p>
+                </div>
+
+                <div class="flow-line"></div>
+
+                <div class="flow-item">
+                    <strong>05 — LIMIT / RETURN</strong>
+                    <p>When the upper limit switch is reached, the upward movement stops and the cycle returns to its programmed state.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div class="notice">
+        <div class="notice-icon">!</div>
+        <div>
+            <strong>SYSTEM INFORMATION</strong>
+            <p>This page is an instructional interface. The displayed workflow describes the intended HAO operation and is not a direct hardware control connection.</p>
+        </div>
+    </div>
+
+</main>
+
+<footer class="footer">
+    HAO — HYDRO AUTOMATED OPERATOR • SYSTEM GUIDE
+</footer>
+
+<script>
+/* PARTICLES */
+const particles=document.getElementById("particles");
+for(let i=0;i<45;i++){
+    const p=document.createElement("div");
+    p.className="particle";
+    p.style.left=Math.random()*100+"%";
+    p.style.animationDuration=(5+Math.random()*10)+"s";
+    p.style.animationDelay=Math.random()*10+"s";
+    particles.appendChild(p);
+}
+
+/* CONTROLLER NAVIGATION */
+document.querySelectorAll(".control").forEach(control=>{
+    control.addEventListener("click",()=>{
+        document.querySelectorAll(".control").forEach(item=>{
+            item.classList.remove("active");
+        });
+        control.classList.add("active");
+    });
+});
+
+/* SMALL MOUSE PARALLAX */
+document.addEventListener("mousemove",e=>{
+    const x=e.clientX/window.innerWidth-.5;
+    const y=e.clientY/window.innerHeight-.5;
+    document.querySelector(".grid").style.transform=
+        `perspective(600px) rotateX(58deg) translate(${x*8}px,${y*8}px)`;
+});
+</script>
+
+</body>
+</html>
